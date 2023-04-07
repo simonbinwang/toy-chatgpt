@@ -1,10 +1,11 @@
-import { types, getSnapshot } from "mobx-state-tree";
+import { types } from "mobx-state-tree";
 import { getAzureChatTokenGenerator } from "../utils/azureChatTokenGenerator";
 
 const Message = types
   .model("Message", {
     role: types.enumeration("Role", ["user", "assistant"]),
     content: types.string,
+    isCompleted: types.optional(types.boolean, false),
   })
   .views((self) => ({
     get item() {
@@ -14,6 +15,9 @@ const Message = types
   .actions((self) => ({
     updateContent(newContent: string) {
       self.content = newContent;
+    },
+    updateIsCompleted(newIsCompleted: boolean) {
+      self.isCompleted = newIsCompleted;
     },
   }));
 
@@ -30,15 +34,6 @@ const MessageStore = types
     addMessage(message: { role: string; content: string }) {
       self.messages.push(message);
     },
-    // addUserMessage(content: string) {
-    //   self.messages.push({ role: "user", content });
-    // },
-    // addBotMessage(content: string) {
-    //   self.messages.push({ role: "assistant", content });
-    // },
-    // updateLastBotMessage(content: string) {
-    //   self.messages[self.messages.length - 1].updateContent(content);
-    // },
   }));
 
 const ChatEngine = types
@@ -49,7 +44,11 @@ const ChatEngine = types
     async addUserMessage(content: string) {
       self.messageStore.addMessage({ role: "user", content });
 
-      const botMessage = Message.create({ role: "assistant", content: "" });
+      const botMessage = Message.create({
+        role: "assistant",
+        content: "",
+        isCompleted: false,
+      });
       self.messageStore.addMessage(botMessage);
 
       const tokenGenerator = getAzureChatTokenGenerator(
@@ -61,6 +60,7 @@ const ChatEngine = types
       for await (const token of tokenGenerator) {
         botMessage.updateContent(botMessage.content + token);
       }
+      botMessage.updateIsCompleted(true);
     },
   }));
 
