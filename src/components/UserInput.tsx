@@ -11,6 +11,7 @@ export const UserInput = ({ onChange }: UserInputProps) => {
   return (
     <Box>
       <TextField
+        label="User Input"
         onKeyDown={(ev) => {
           if (ev.key === "Enter" && ev.ctrlKey) {
             onChange(message);

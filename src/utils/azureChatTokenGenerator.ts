@@ -35,7 +35,7 @@ export async function* getAzureChatTokenGenerator(
       }
       try {
         const parsed = JSON.parse(message);
-        console.log("parsed", parsed);
+        // console.log("parsed", parsed);
         if (parsed.choices[0].delta.content) {
           yield parsed.choices[0].delta.content;
         }

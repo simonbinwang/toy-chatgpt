@@ -1,12 +1,11 @@
 import React from "react";
 
 interface BotMessageProps {
-  // generator result
-  lines: string[];
-  //   lineGenerator: AsyncGenerator<string, void, unknown>;
+  message: string;
 }
-export const BotMessage = ({ lines }: BotMessageProps) => {
-  console.log(lines);
+export const BotMessage = ({ message }: BotMessageProps) => {
+  const lines = message.split("\n");
+
   return (
     <div>
       {lines.map((line, i) => (
