@@ -4,15 +4,26 @@ import { Container } from "@mui/material";
 import { UserMessage } from "./components/UserMessage";
 import { BotMessage } from "./components/BotMessage";
 import { observer } from "mobx-react-lite";
-import { chatEngine, messageStore } from "./store/MessageStore";
-
-// onSnapshot(messageStore, (snapshot) => {
-//   console.log("snapshot", snapshot);
-// });
+import { messageStore } from "./store/MessageStore";
+import { chatEngine } from "./store/ChatEngine";
+import { useInitConfig } from "./hooks/useInitConfig";
+import { ConfigForm } from "./components/ConfigForm";
+import { configStore } from "./store/ConfigStore";
+import { applySnapshot, getSnapshot } from "mobx-state-tree";
 
 function App() {
+  const ready = useInitConfig();
+
   return (
     <Container>
+      {ready ? (
+        <ConfigForm
+          defaultValue={getSnapshot(configStore)}
+          onChange={(values) => {
+            applySnapshot(configStore, values);
+          }}
+        />
+      ) : null}
       <UserInput
         onChange={(message) => {
           chatEngine.addUserMessage(message);

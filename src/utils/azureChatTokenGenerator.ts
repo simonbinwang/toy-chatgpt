@@ -3,7 +3,7 @@ export async function* getAzureChatTokenGenerator(
   apiKey: string,
   messages: { role: string; content: string }[]
 ) {
-  let response = await fetch(endpoint, {
+  const response = await fetch(endpoint, {
     headers: {
       "Content-Type": "application/json",
       "api-key": apiKey,
@@ -32,6 +32,9 @@ export async function* getAzureChatTokenGenerator(
       const message = line.replace(/^data: /, "");
       if (message === "[DONE]") {
         return; // Stream finished
+      }
+      if (!response.ok) {
+        yield message;
       }
       try {
         const parsed = JSON.parse(message);
