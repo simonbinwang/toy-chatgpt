@@ -17,6 +17,7 @@ import {
   TextField,
   ThemeProvider,
 } from "@mui/material";
+import Layout from "./components/Layout";
 
 const theme = createTheme({
   palette: {
@@ -44,53 +45,53 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Grid container sx={{ height: "100vh", width: "100vw" }}>
-        <Grid item xs={3} sx={{ height: "100%", borderRight: "solid 1px" }}>
-          {ready ? (
+      <Layout
+        leftChildren={
+          ready ? (
             <ConfigForm
               defaultValue={getSnapshot(configStore)}
               onChange={(values) => {
                 applySnapshot(configStore, values);
               }}
             />
-          ) : null}
-        </Grid>
-        <Grid
-          item
-          xs={9}
-          container
-          direction="column"
-          justifyContent="space-between"
-          sx={{ height: "100%", position: "relative" }}
-        >
-          <Box>
-            {messageStore.messages.map((message) => {
-              return message.role === "user" ? (
-                <UserMessage message={message.content} />
-              ) : (
-                <BotMessage
-                  message={message.content}
-                  isCompleted={message.isCompleted}
-                />
-              );
-            })}
+          ) : null
+        }
+        rightChildren={
+          <Box
+            sx={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <Box sx={{ width: "100%", flexGrow: 1 }}>
+              {messageStore.messages.map((message) => {
+                return message.role === "user" ? (
+                  <UserMessage message={message.content} />
+                ) : (
+                  <BotMessage
+                    message={message.content}
+                    isCompleted={message.isCompleted}
+                  />
+                );
+              })}
+            </Box>
+            <UserInput
+              textFieldProps={{
+                variant: "outlined",
+                placeholder: "Type here...",
+                sx: {
+                  width: "100%",
+                },
+              }}
+              onChange={(message) => {
+                chatEngine.addUserMessage(message);
+              }}
+            />
           </Box>
-          <UserInput
-            textFieldProps={{
-              variant: "outlined",
-              placeholder: "Type here...",
-              sx: {
-                width: "100%",
-                position: "absolute",
-                bottom: 0,
-              },
-            }}
-            onChange={(message) => {
-              chatEngine.addUserMessage(message);
-            }}
-          />
-        </Grid>
-      </Grid>
+        }
+      />
     </ThemeProvider>
   );
 }

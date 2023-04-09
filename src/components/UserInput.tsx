@@ -1,27 +1,29 @@
-import { Box, TextField } from "@mui/material";
+import { Box, TextField, TextFieldProps } from "@mui/material";
 import React from "react";
 
-interface UserInputProps {
+type UserInputProps = {
   onChange: (value: string) => void;
-}
+  textFieldProps: TextFieldProps;
+};
 
-export const UserInput = ({ onChange }: UserInputProps) => {
+export const UserInput = ({ onChange, textFieldProps }: UserInputProps) => {
   const [message, setMessage] = React.useState<string>("");
 
   return (
-    <Box>
-      <TextField
-        label="User Input"
-        onKeyDown={(ev) => {
-          if (ev.key === "Enter" && ev.ctrlKey) {
-            onChange(message);
-          }
-        }}
-        onChange={(ev) => {
-          setMessage(ev.target.value.toString());
-        }}
-        multiline
-      />
-    </Box>
+    <TextField
+      {...textFieldProps}
+      // label="User Input"
+      onKeyDown={(ev) => {
+        if (ev.key === "Enter" && ev.ctrlKey) {
+          onChange(message);
+          setMessage("");
+        }
+      }}
+      value={message}
+      onChange={(ev) => {
+        setMessage(ev.target.value.toString());
+      }}
+      multiline
+    />
   );
 };

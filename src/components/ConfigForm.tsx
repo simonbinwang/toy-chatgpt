@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, TextField, Grid, Container } from "@mui/material";
+import { Button, TextField, Grid, Container, Box } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { TConfig } from "../store/ConfigStore";
@@ -27,7 +27,7 @@ export const ConfigForm = ({ defaultValue, onChange }: ConfigFormProps) => {
   });
 
   return (
-    <Container>
+    <Box sx={{ paddingTop: "1rem" }}>
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
@@ -69,6 +69,6 @@ export const ConfigForm = ({ defaultValue, onChange }: ConfigFormProps) => {
           </Grid>
         </Grid>
       </form>
-    </Container>
+    </Box>
   );
 };
